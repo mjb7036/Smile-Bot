@@ -1,4 +1,5 @@
 # bot.py
+from email.policy import default
 import os
 
 import nextcord
@@ -14,10 +15,21 @@ bot = commands.Bot(command_prefix='')
 async def on_ready():
     await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.watching, name=':D'))
 
+guilds=[641076884838547480, 844732033442906142]
 bot.streak = 0
 bot.record = 0
 
-@bot.slash_command(name="smile", description="Check the :D stats", guild_ids=[844732033442906142])
+@bot.slash_command(name="update_record", description="Updates the smile record", guild_ids=guilds, default_permission=False)
+async def update_record(interaction: nextcord.Interaction, record: int):
+    bot.record = record
+    await interaction.send(f"The record was updated to {record}")\
+
+@bot.slash_command(name="update_streak", description="Updates the streak", guild_ids=guilds, default_permission=False)
+async def update_streak(interaction: nextcord.Interaction, streak: int):
+    bot.streak = streak
+    await interaction.send(f"The streak was updated to {streak}")
+
+@bot.slash_command(name="smile", description="Check the :D stats", guild_ids=guilds)
 async def smile(interaction: nextcord.Interaction):
     embed = nextcord.Embed(title="Smile Stats", description=f"Current streak: {bot.streak}\nCurrent record: {bot.record}", color=nextcord.Color.blue())
     await interaction.send(embed=embed)
